@@ -14,6 +14,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+# from rollout import Rollout
 from torch.distributions import Categorical
 
 
@@ -86,15 +87,27 @@ class BaseTrainer:
 
         if self.discrete:  # Please use categorical distribution.
             logits, values = self.model(obs)
-            pass
-
+            # pass
+            dist = torch.distributions.Categorical(logits=logits)
+            actions = dist.sample()
+            action_log_probs = dist.log_prob(actions)
+             
             actions = actions.view(-1, 1)  # In discrete case only return the chosen action.
 
         else:  # Please use normal distribution. You should
             means, log_std, values = self.model(obs)
-            pass
+            dist = torch.distributions.Normal(means, torch.exp(log_std))
+            actions = dist.sample()
+            # actions = torch.clamp(actions, -1, 1)
+            action_log_probs = dist.log_prob(actions).sum(axis=1)
 
             actions = actions.view(-1, self.num_actions)
+
+            # means, log_std, values = self.model(obs)
+            # action_std = torch.exp(log_std)
+            # dist = torch.distributions.Normal(means, action_std)
+            # action_log_probs = dist.log_prob(act).sum(axis=1).view(-1, 1)
+            # dist_entropy = dist.entropy().mean()
 
         values = values.view(-1, 1)
         action_log_probs = action_log_probs.view(-1, 1)
@@ -264,9 +277,10 @@ def test_base_trainer():
 
     class FakeTrainer(BaseTrainer):
         def setup_optimizer(self):
-            pass
+            self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.lr)
 
         def setup_rollouts(self):
+            # self.rollouts = []
             pass
 
     # ===== Discrete case =====

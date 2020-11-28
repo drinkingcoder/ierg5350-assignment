@@ -19,7 +19,7 @@ from load_agents import PolicyAPI
 
 
 # Please change the function name but keep the prefix as "my_policy"! For example, "my_policy_1155136634".
-def my_policy_SID(num_envs=1):
+def my_policy_1155152331(num_envs=1):
     """We will use this function to load your agent and then testing.
 
     Make sure this function can run bug-free, when the working directory is
@@ -33,8 +33,8 @@ def my_policy_SID(num_envs=1):
     """
     # [TODO] rewrite this function
     # [TODO] CAUTION! PLEASE CHANGE THE NAME OF THIS FUNCTION!!! Otherwise our program can't find your agent!
-    my_agent_log_dir = None
-    my_agent_suffix = None
+    my_agent_log_dir = "my_agents/"
+    my_agent_suffix = "iter4150"
 
     # checkpoint_path = osp.join(my_agent_log_dir, "checkpoint-{}.pkl".format(my_agent_suffix))
     # if not osp.exists(checkpoint_path):
